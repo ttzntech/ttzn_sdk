@@ -5,7 +5,7 @@
 
 - Copyright &copy; 2023 [威海天特智能科技有限公司](http://ttzntech.com/)
 
-如果在使用该仓库当中出现问题，请发布 issue @ ["https://github.com/ttzntech/ttzn_sdk/issues"]() 。
+如果在使用该仓库当中出现问题，请发布 issue @ ["https://github.com/ttzntech/ttzn_sdk/issues"](https://github.com/ttzntech/ttzn_sdk/issues) 。
 
 ## 支持的平台
 
