@@ -4,7 +4,7 @@ project(demo)
 # compile options
 add_compile_options(-std=c++11)
 
-find_package(ttzn_sdk REQUIREED)
+find_package(ttzn_sdk REQUIRED)
 
 ######## CODY DEMO #########
 add_executable(cody_demo cody_demo.cpp)
