@@ -90,4 +90,4 @@ ttzn_setup_dev
 具体细节请参考 [demo](./demo) 子目录。
 
 ---
-- Copyright &copy; 2023 [威海天特智能科技有限公司](http://ttzntech.com/)
+Copyright &copy; 2023 [威海天特智能科技有限公司](http://ttzntech.com/)
