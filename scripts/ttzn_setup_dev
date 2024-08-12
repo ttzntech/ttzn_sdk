@@ -1,0 +1,31 @@
+#! /bin/sh
+
+usbttycan() {
+    echo "Setup a USB TTY CAN device"
+    echo "Please type device path (default: /dev/ttyUSB0)"
+    read -r dev
+    if [ -z $dev ]; then
+        echo "setup device /dev/ttyUSB0"
+        sudo chmod 777 /dev/ttyUSB0
+    else
+        echo "setup device $dev"
+        sudo chmod 777 $dev
+    fi
+}
+
+echo "Please select setup device type (default: 1)"
+echo "1: USB TTY CAN"
+echo "To Be Done"
+
+read -r type
+
+if [ -z $type ]; then
+    type=1
+fi
+
+case $type in
+    1) usbttycan ;;
+    *) echo "Not support type" ;;
+esac
+
+echo ""

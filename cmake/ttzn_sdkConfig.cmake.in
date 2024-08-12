@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/ttzn_sdkTargets.cmake")
+
+# Optionally set any required variables here
+
+# Capturing values from configure (optional) 
+# set(my-config-var @my-config-var@)
