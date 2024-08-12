@@ -71,4 +71,4 @@ inline T bound(T x, T low, T upper) {
 
 int uart_set(int fd, uint64_t baude, int c_flow, int bits, char parity, int stop);
 
-#endif 
+#endif /* END UTILS_H */

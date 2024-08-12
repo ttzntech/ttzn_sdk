@@ -32,11 +32,10 @@
 namespace cody {
 
 /**
- * note: t prefix mean type 
- *       i prefin mean instance
- *       E prefix mean Enum
+ * note: t prefix means type 
+ *       i prefix means instance
+ *       E prefix means Enum
  */
-
 
 typedef union {
     struct PREPACK {
@@ -210,7 +209,9 @@ struct ActualData {
 };
 
 int pack(uint32_t idx, Data& data, const ActualData& act_data, CanMsg* out);
+
 int unpack(Data& data, ActualData& act_data, CanMsg* in);
+
 int check_buf(uint32_t idx, ActualData& act_data);
 
 } /* END cody namespace */

@@ -42,4 +42,4 @@ private:
 
 } /* END namespace cody */
 
-#endif
+#endif /* END CODY_TRAN_H */
