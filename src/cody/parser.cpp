@@ -108,7 +108,7 @@ int unpack(Data& data, ActualData& act_data, CanMsg* in) {
         act_data.i361BMSFb.bat_SOC = bound<uint8_t>(data.i361BMSFb.bat_SOC, 0, 100);
         act_data.i361BMSFb.vol = data.i361BMSFb.vol; /* voltage */
         act_data.i361BMSFb.cur = data.i361BMSFb.cur; /* current */
-        act_data.i361BMSFb.tmp = data.i361BMSFb.tmp; /* degree */
+        act_data.i361BMSFb.temp = data.i361BMSFb.temp; /* degree */
         break;
     default:
         return 0;

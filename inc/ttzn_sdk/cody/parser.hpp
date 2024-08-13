@@ -115,7 +115,7 @@ typedef union {
 
 typedef union {
     struct PREPACK {
-        uint16_t tmp;   /* temperature */
+        uint16_t temp;   /* temperature */
         uint16_t cur;   /* current */
         uint16_t vol;   /* voltage */
         RESERVE(8);
@@ -204,7 +204,7 @@ struct ActualData {
         uint8_t bat_SOC;
         uint16_t vol;   /* voltage */
         uint16_t cur;   /* current */
-        uint16_t tmp;   /* temperature */
+        uint16_t temp;   /* temperature */
     } i361BMSFb;
 };
 

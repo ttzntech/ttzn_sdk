@@ -82,7 +82,7 @@ int main() {
             can_tran.data.i361BMSFb.bat_SOC,
             can_tran.data.i361BMSFb.vol,
             can_tran.data.i361BMSFb.cur,
-            can_tran.data.i361BMSFb.tmp
+            can_tran.data.i361BMSFb.temp
         );
         printf("######################### END ############################### \n");
 
