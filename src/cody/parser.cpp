@@ -99,8 +99,8 @@ int unpack(Data& data, ActualData& act_data, CanMsg* in) {
     case ID_OdomFb:
         memcpy(data.i311OdomFb.data, in->data, sizeof(in->data));
         act_data.i311OdomFb.recv_ = 1;
-        act_data.i311OdomFb.left = static_cast<double>(data.i311OdomFb.left * 1000); /* m */
-        act_data.i311OdomFb.right = static_cast<double>(data.i311OdomFb.right * 1000); /* m */
+        act_data.i311OdomFb.left = static_cast<double>(data.i311OdomFb.left / 1000); /* m */
+        act_data.i311OdomFb.right = static_cast<double>(data.i311OdomFb.right / 1000); /* m */
         break;
     case ID_BMSFb:
         memcpy(data.i361BMSFb.data, in->data, sizeof(in->data));
