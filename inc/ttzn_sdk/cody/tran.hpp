@@ -18,10 +18,9 @@
 
 namespace cody {
 
-class CanTran {
+class CANTran : public CANInterface {
 public:
-    CanTran(const std::string& ifname);
-    ~CanTran();
+    CANTran(const std::string& ifname, DevType dev_type = DevType::USB_TTL_CAN);
     
     bool send(uint32_t idx);
     bool recv(uint32_t idx);
@@ -29,15 +28,7 @@ public:
     ActualData data;
 
 private:
-    int fd;
-    std::string filename;
-
     Data data_;
-
-    CanMsg send_data_;
-    CanMsg send_buf_;
-
-    CanMsg recv_data_;
 };
 
 } /* END namespace cody */

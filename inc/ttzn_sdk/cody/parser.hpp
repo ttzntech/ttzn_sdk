@@ -16,20 +16,21 @@
 #include "ttzn_sdk/utils.hpp"
 #include "ttzn_sdk/common.hpp"
 
-/*         CAN ID Defination         */
-#define ID_SysStatus            (0x211)
-#define ID_MoveCtrlFb           (0x221)
-#define ID_MoveCtrl             (0x111)
-#define ID_Motor1InfoFb         (0x251)
-#define ID_Motor2InfoFb         (0x252)
-#define ID_WarnFb               (0x261)
-#define ID_ModeCtrl             (0x421)
-#define ID_LightCtrl            (0x121)
-#define ID_OdomFb               (0x311)
-#define ID_BMSFb                (0x361)
-
 
 namespace cody {
+
+enum ID : uint32_t {
+    ID_SysStatus            = 0x211,
+    ID_MoveCtrlFb           = 0x221,
+    ID_MoveCtrl             = 0x111,
+    ID_Motor1InfoFb         = 0x251,
+    ID_Motor2InfoFb         = 0x252,
+    ID_WarnFb               = 0x261,
+    ID_ModeCtrl             = 0x421,
+    ID_LightCtrl            = 0x121,
+    ID_OdomFb               = 0x311,
+    ID_BMSFb                = 0x361
+};
 
 /**
  * note: t prefix means type 
@@ -202,15 +203,19 @@ struct ActualData {
     struct {
         uint8_t recv_;
         uint8_t bat_SOC;
-        uint16_t vol;   /* voltage */
-        uint16_t cur;   /* current */
-        uint16_t temp;   /* temperature */
+        uint16_t vol;       /* voltage */
+        uint16_t cur;       /* current */
+        uint16_t temp;      /* temperature */
     } i361BMSFb;
 };
 
-int pack(uint32_t idx, Data& data, const ActualData& act_data, CanMsg* out);
+int pack(uint32_t idx, Data& data, const ActualData& act_data, DevType dev_type, CANMsg& out);
 
-int unpack(Data& data, ActualData& act_data, CanMsg* in);
+static int _pack(Data& data, const ActualData& act_data, uint32_t idx, uint8_t* data_, size_t size);
+
+uint32_t unpack(Data& data, ActualData& act_data, DevType dev_type, CANMsg& in);
+
+static void _unpack(Data& data, ActualData& act_data, uint32_t idx, uint8_t* data_, size_t size);
 
 int check_buf(uint32_t idx, ActualData& act_data);
 

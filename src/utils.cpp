@@ -176,3 +176,36 @@ int uart_set(int fd, uint64_t baude, int c_flow, int bits, char parity, int stop
  
     return 0;
 }
+
+
+int socket_can_set(const char* ifname) {
+    /* Create a socket */
+    int sock = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+    if (sock < 0) {
+        perror("Error while opening socket");
+        return -1;
+    }
+
+    /* Specify the CAN interface to use */
+    struct ifreq ifr;
+    strcpy(ifr.ifr_name, ifname);  // Set the interface name, e.g., "can0"
+    if (ioctl(sock, SIOCGIFINDEX, &ifr) < 0) {
+        fprintf(stderr, "Error getting interface index for %s \n", ifname);
+        close(sock);
+        return -1;
+    }
+
+    /* Bind the socket to the CAN interface */
+    struct sockaddr_can addr;
+    addr.can_family = AF_CAN;
+    addr.can_ifindex = ifr.ifr_ifindex;
+
+    if (bind(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+        perror("Error in socket bind");
+        close(sock);
+        return -1;
+    }
+
+    /* The socket is successfully initialized */
+    return sock;
+}

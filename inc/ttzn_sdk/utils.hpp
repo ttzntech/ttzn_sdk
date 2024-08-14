@@ -30,10 +30,18 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 #include <unistd.h>
+/* USB TTL CAN */
 #include <fcntl.h>
 #include <termios.h>
 #include <sys/types.h>
+/* SocketCAN */
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <linux/can.h>
+#include <linux/can/raw.h>
+#include <net/if.h>
 
 /**
  * @brief revsese_byte order at `ptr` with size `n`
@@ -70,5 +78,7 @@ inline T bound(T x, T low, T upper) {
 }
 
 int uart_set(int fd, uint64_t baude, int c_flow, int bits, char parity, int stop);
+
+int socket_can_set(const char* ifname);
 
 #endif /* END UTILS_H */

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(ttzn_sdk VERSION 0.1.0)
+project(ttzn_sdk VERSION 0.1.1)
 
 # CPP compile standard default is C++11
 add_compile_options(-std=c++11)
@@ -9,6 +9,7 @@ file(GLOB CODY_SRCS src/cody/*)
 add_library(${PROJECT_NAME} 
             # miscellaneous
             src/utils.cpp
+            src/common.cpp
             # include CODY source code
             ${CODY_SRCS}
 )

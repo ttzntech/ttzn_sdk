@@ -18,27 +18,44 @@ namespace cody {
  * @param idx CAN id
  * @param data param to store origin data 
  * @param act_data param to store actual data
+ * @param dev_type param to specific CAN dev type 
  * @param out output CAN message
  * @return int 0 mean success other mean false
  */
-int pack(uint32_t idx, Data& data, const ActualData& act_data, CanMsg* out) {
-    out->idx = idx;
+int pack(uint32_t idx, Data& data, const ActualData& act_data, DevType dev_type, CANMsg& out) {
+    int ret = 0;
+    switch (dev_type)
+    {
+    case DevType::USB_TTL_CAN:
+        out.utc.can_id = idx;
+        ret = _pack(data, act_data, idx, out.utc.data, sizeof(out.utc.data));
+        break;
+    case DevType::CANable:
+    case DevType::ORIGIN:
+        /* TODO */
+        break;
+    }
+
+    return ret;
+}
+
+static int _pack(Data& data, const ActualData& act_data, uint32_t idx, uint8_t* data_, size_t size) {
     switch (idx)
     {
     case ID_MoveCtrl:
         data.i111MoveCtrl.speed = bound<int16_t>(static_cast<int16_t>(act_data.i111MoveCtrl.speed / 0.00066), -2000, 2000);
         data.i111MoveCtrl.corner = bound<int16_t>(static_cast<int16_t>(act_data.i111MoveCtrl.corner / 0.06), -500, 500);
-        memcpy(out->data, data.i111MoveCtrl.data, sizeof(out->data));
+        memcpy(data_, data.i111MoveCtrl.data, size);
         break;
     case ID_ModeCtrl:
         data.i421ModeCtrl.mode = static_cast<uint8_t>(act_data.i421ModeCtrl.mode);
-        memcpy(out->data, data.i421ModeCtrl.data, sizeof(out->data));
+        memcpy(data_, data.i421ModeCtrl.data, size);
         break;
     case ID_LightCtrl:
         data.i121LightCtrl.front = static_cast<uint8_t>(act_data.i121LightCtrl.front);
         data.i121LightCtrl.rear = static_cast<uint8_t>(act_data.i121LightCtrl.rear);
         data.i121LightCtrl.parity = act_data.i121LightCtrl.parity;
-        memcpy(out->data, data.i121LightCtrl.data, sizeof(out->data));
+        memcpy(data_, data.i121LightCtrl.data, size);
         break;
     default:
         return -1;
@@ -52,14 +69,32 @@ int pack(uint32_t idx, Data& data, const ActualData& act_data, CanMsg* out) {
  * 
  * @param data param to store origin data 
  * @param act_data param to store actual data
+ * @param dev_type param to specific CAN dev type 
  * @param in input CAN message
  * @return int 0 means success otherwise means error
  */
-int unpack(Data& data, ActualData& act_data, CanMsg* in) {
-    switch (in->idx)
+uint32_t unpack(Data& data, ActualData& act_data, DevType dev_type, CANMsg& in) {
+    uint32_t idx = 0;
+    switch (dev_type)
+    {
+    case DevType::USB_TTL_CAN:
+        idx = in.utc.can_id;
+        _unpack(data, act_data, idx, in.utc.data, sizeof(in.utc.data));
+        break;
+    case DevType::CANable:
+    case DevType::ORIGIN:
+        /* TODO */
+        break;
+    }
+
+    return idx;
+}
+
+static void _unpack(Data& data, ActualData& act_data, uint32_t idx, uint8_t* data_, size_t size) {
+    switch (idx)
     {
     case ID_SysStatus:
-        memcpy(data.i211SysStatus.data, in->data, sizeof(in->data));
+        memcpy(data.i211SysStatus.data, data_, size);
         act_data.i211SysStatus.recv_ = 1;
         act_data.i211SysStatus.cur_status = data.i211SysStatus.cur_status;
         act_data.i211SysStatus.ctrl_mode = data.i211SysStatus.ctrl_mode;
@@ -68,25 +103,25 @@ int unpack(Data& data, ActualData& act_data, CanMsg* in) {
         act_data.i211SysStatus.parity = data.i211SysStatus.parity;
         break;
     case ID_MoveCtrlFb:
-        memcpy(data.i221MoveCtrlFb.data, in->data, sizeof(in->data));
+        memcpy(data.i221MoveCtrlFb.data, data_, size);
         act_data.i221MoveCtrlFb.recv_ = 1;
         act_data.i221MoveCtrlFb.speed = static_cast<double>(data.i221MoveCtrlFb.speed * 0.00066); /* m/s */
         act_data.i221MoveCtrlFb.corner = static_cast<double>(data.i221MoveCtrlFb.corner * 0.06); /* degree */
         break;
     case ID_Motor1InfoFb:
-        memcpy(data.i251Motor1InfoFb.data, in->data, sizeof(in->data));
+        memcpy(data.i251Motor1InfoFb.data, data_, size);
         act_data.i251Motor1InfoFb.recv_ = 1;
         act_data.i251Motor1InfoFb.rpm = data.i251Motor1InfoFb.rpm;
         act_data.i251Motor1InfoFb.pos = data.i251Motor1InfoFb.pos;
         break;
     case ID_Motor2InfoFb:
-        memcpy(data.i252Motor2InfoFb.data, in->data, sizeof(in->data));
+        memcpy(data.i252Motor2InfoFb.data, data_, size);
         act_data.i252Motor2InfoFb.recv_ = 1;
         act_data.i252Motor2InfoFb.rpm = data.i252Motor2InfoFb.rpm;
         act_data.i252Motor2InfoFb.pos = data.i252Motor2InfoFb.pos;
         break;
     case ID_WarnFb:
-        memcpy(data.i261WarnFb.data, in->data, sizeof(in->data));
+        memcpy(data.i261WarnFb.data, data_, size);
         act_data.i261WarnFb.recv_ = 1;
         act_data.i261WarnFb.steer_motor_warn = data.i261WarnFb.steer_motor_warn;
         act_data.i261WarnFb.motor1_warn = data.i261WarnFb.motor1_warn;
@@ -97,24 +132,20 @@ int unpack(Data& data, ActualData& act_data, CanMsg* in) {
         act_data.i261WarnFb.emer_stop = data.i261WarnFb.emer_stop;
         break;
     case ID_OdomFb:
-        memcpy(data.i311OdomFb.data, in->data, sizeof(in->data));
+        memcpy(data.i311OdomFb.data, data_, size);
         act_data.i311OdomFb.recv_ = 1;
         act_data.i311OdomFb.left = static_cast<double>(data.i311OdomFb.left / 1000); /* m */
         act_data.i311OdomFb.right = static_cast<double>(data.i311OdomFb.right / 1000); /* m */
         break;
     case ID_BMSFb:
-        memcpy(data.i361BMSFb.data, in->data, sizeof(in->data));
+        memcpy(data.i361BMSFb.data, data_, size);
         act_data.i361BMSFb.recv_ = 1;
         act_data.i361BMSFb.bat_SOC = bound<uint8_t>(data.i361BMSFb.bat_SOC, 0, 100);
         act_data.i361BMSFb.vol = data.i361BMSFb.vol; /* voltage */
         act_data.i361BMSFb.cur = data.i361BMSFb.cur; /* current */
         act_data.i361BMSFb.temp = data.i361BMSFb.temp; /* degree */
         break;
-    default:
-        return 0;
     }
-
-    return in->idx;
 }
 
 /**

@@ -12,11 +12,13 @@
 
 #include "ttzn_sdk/cody/tran.hpp"
 
+using namespace cody;
+
 #define DELAY 20000
 
 
 int main() {
-    cody::CanTran can_tran("/dev/ttyUSB0");
+    CANTran can_tran("/dev/ttyUSB0");
 
     while (true) {
         can_tran.data.i111MoveCtrl.speed = 0.3;

@@ -11,18 +11,62 @@
 #define COMMON_H
 
 #include <stdint.h>
+#include <string>
 
 #include "utils.hpp"
 
 
-struct PREPACK CanMsg {
+/**
+ * @brief Device type that transmit CAN frame
+ * 
+ */
+enum class DevType: uint8_t {
+    USB_TTL_CAN,        /* USB to TTL to CAN */
+    CANable,            /* USB to CAN */
+    ORIGIN              /* Original CAN */
+};
+
+/* USB to TTL to CAN message */
+struct PREPACK UTCMsg {
     // uint8_t tail; 
     uint8_t data[8];
-    uint32_t idx;
-    uint8_t len;
+    uint32_t can_id;
+    uint8_t can_dlc;
     uint8_t remt;
     uint8_t ext;
     uint8_t head;
 } POSTPACK;
+
+/* Socket CAN message */
+struct PREPACK SCMsg {
+    uint8_t data[8];
+    RESERVE(24);
+    uint8_t can_dlc;
+    uint32_t can_id;
+} POSTPACK;
+
+struct CANMsg {
+    UTCMsg utc; /* utc stand for usb ttl can */
+    SCMsg sc;   /* sc stand for socket can */
+};
+
+class CANInterface {
+public:
+    CANInterface(const std::string& ifname, DevType dev_type=DevType::USB_TTL_CAN);
+    ~CANInterface();
+
+    virtual bool send(uint32_t idx) = 0;
+    virtual bool recv(uint32_t idx) = 0;
+
+protected:
+    int fd;
+    std::string ifname;
+    DevType dev_type;
+
+    CANMsg send_; 
+    CANMsg buf_; 
+    CANMsg recv_; 
+};
+
 
 #endif /* END COMMON_H */
