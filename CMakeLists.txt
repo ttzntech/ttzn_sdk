@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
+project(ttzn_sdk VERSION 0.1.1)
 
 # Define the variable to specify the target platform
-set(BUILD_ARCH "amd64" CACHE STRING "Specify the target platform (e.g. amd64, arm64)")
+set(BUILD_ARCH "" CACHE STRING "Specify the target platform (e.g. arm64)")
 
 # Conditionally include the toolchain file based on the target platform
-if(BUILD_ARCH STREQUAL "amd64")
-    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/amd64_toolchain.cmake)
-elseif(BUILD_ARCH STREQUAL "arm64")
+# Only use in x86_64 platform to cross compile arm64 platfrom library
+if(BUILD_ARCH STREQUAL "arm64")
     set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/arm64_toolchain.cmake)
 endif()
 
@@ -15,7 +15,8 @@ if(CMAKE_TOOLCHAIN_FILE)
     include(${CMAKE_TOOLCHAIN_FILE})
 endif()
 
-project(ttzn_sdk VERSION 0.1.1)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/fix_arch_name.cmake)
+message(STATUS "Build Arch  : ${CMAKE_SYSTEM_PROCESSOR}")
 
 # CPP compile standard default is C++11
 add_compile_options(-std=c++11)
