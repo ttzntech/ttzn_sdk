@@ -1,21 +1,48 @@
 #! /bin/sh
 
+RED="\033[31m"
+RESET="\033[0m"
+
 usbttycan() {
     echo "Setup a USB TTY CAN device"
     echo "Please type device path (default: /dev/ttyUSB0)"
     read -r dev
-    if [ -z $dev ]; then
-        echo "setup device /dev/ttyUSB0"
-        sudo chmod 777 /dev/ttyUSB0
-    else
-        echo "setup device $dev"
-        sudo chmod 777 $dev
+    # set dev default value to /dev/ttyUSB0
+    ${dev:="/dev/ttyUSB0"}
+
+    echo "setup device $dev"
+    sudo chmod 777 $dev
+}
+
+CANable() {
+    echo "Unsupport now please wait"
+    exit -1
+}
+
+origin() {
+    echo "Setup original CAN for ${RED}Nvidia Jetson AGX Xavier${RESET}"
+    if ! which busybox &> /dev/null ; then
+        echo "Please install busybox first!"
+        echo "${RED}sudo apt install busybox${RESET}"
+        exit -1
     fi
+    echo "Please type CAN if name (default: can0)"
+    read -r dev
+    # set dev default value to can0
+    ${dev:="can0"}
+
+    sudo busybox devmem 0x0c303018 0xc458
+    sudo busybox devmem 0x0c303010 0xc400
+    sudo modprobe can
+    sudo modprobe can_raw
+    sudo modprobe mttcan 
+    sudo ip link set $dev up type can bitrate 500000
 }
 
 echo "Please select setup device type (default: 1)"
 echo "1: USB TTY CAN"
-echo "To Be Done"
+echo "2: CANable (${RED}Unsupport yet!${RESET})"
+echo "3: ORIGIN (Nvidia Jetson AGX Xavier)"
 
 read -r type
 
@@ -25,6 +52,8 @@ fi
 
 case $type in
     1) usbttycan ;;
+    2) CAnable ;;
+    3) origin ;;
     *) echo "Not support type" ;;
 esac
 
