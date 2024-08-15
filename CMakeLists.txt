@@ -1,4 +1,20 @@
 cmake_minimum_required(VERSION 3.5)
+
+# Define the variable to specify the target platform
+set(BUILD_ARCH "amd64" CACHE STRING "Specify the target platform (e.g. amd64, arm64)")
+
+# Conditionally include the toolchain file based on the target platform
+if(BUILD_ARCH STREQUAL "amd64")
+    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/amd64_toolchain.cmake)
+elseif(BUILD_ARCH STREQUAL "arm64")
+    set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/arm64_toolchain.cmake)
+endif()
+
+# Include the toolchain file if it was set
+if(CMAKE_TOOLCHAIN_FILE)
+    include(${CMAKE_TOOLCHAIN_FILE})
+endif()
+
 project(ttzn_sdk VERSION 0.1.1)
 
 # CPP compile standard default is C++11
@@ -85,17 +101,15 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 # Packaging support
 set(CPACK_PACKAGE_VENDOR "TTZNTech")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "TTZN SDK for Robots from Tiante Intelligent Technology")
-set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
-set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
-set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
-set(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}_${CPACK_DEBIAN_ARCHITECTURE}")
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}_${CMAKE_SYSTEM_PROCESSOR}")
 
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 
 set(CPACK_GENERATOR "DEB")
-set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Joonchen Liau (liaojuncheng123@foxmail.com)") 
 set(CPACK_SOURCE_IGNORE_FILES .git .*build.* .vscode)
 
