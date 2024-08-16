@@ -27,23 +27,24 @@ bool CANTran::send(uint32_t idx) {
     switch (dev_type)
     {
     case DevType::USB_TTL_CAN:
-        buf_.utc = send_.utc;
-        reverse_byte(&buf_.utc, sizeof(buf_.utc));
-        nbytes = write(fd, &buf_.utc, sizeof(buf_.utc));
+        nbytes = write(fd, &send_.utc, sizeof(send_.utc));
+        if (nbytes != sizeof(send_.utc)) {
+            #ifdef LOG
+            perror("Error in sending CAN frame");
+            #endif
+            return false;
+        }
         break;
     case DevType::CANable:
     case DevType::ORIGIN:
-        buf_.sc = send_.sc;
-        reverse_byte(&buf_.sc, sizeof(buf_.sc));
-        nbytes = write(fd, &buf_.sc, sizeof(buf_.sc));
+        nbytes = write(fd, &send_.sc, sizeof(send_.sc));
+        if (nbytes != sizeof(send_.sc)) {
+            #ifdef LOG
+            perror("Error in sending CAN frame");
+            #endif
+            return false;
+        }
         break;
-    }
-
-    if (nbytes != sizeof(buf_.utc)) {
-        #ifdef LOG
-        perror("Error in sending CAN frame");
-        #endif
-        return false;
     }
 
     return true;
@@ -66,7 +67,6 @@ bool CANTran::recv(uint32_t idx) {
                 #endif
                 return false;
             }
-            reverse_byte(&recv_.utc, sizeof(recv_.utc));
             break;
         case DevType::CANable:
         case DevType::ORIGIN:
@@ -77,7 +77,6 @@ bool CANTran::recv(uint32_t idx) {
                 #endif
                 return false;
             }
-            reverse_byte(&recv_.sc, sizeof(recv_.sc));
             break;
         }
         unpack(data_, data, dev_type, recv_);

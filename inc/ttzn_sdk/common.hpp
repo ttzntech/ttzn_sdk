@@ -28,21 +28,30 @@ enum class DevType: uint8_t {
 
 /* USB to TTL to CAN message */
 struct PREPACK UTCMsg {
-    // uint8_t tail; 
-    uint8_t data[8];
-    uint32_t can_id;
-    uint8_t can_dlc;
-    uint8_t remt;
-    uint8_t ext;
     uint8_t head;
+    uint8_t ext;
+    uint8_t remt;
+    uint8_t can_dlc;
+    /* Which part of frame need to reverse */
+    union {
+        struct PREPACK {
+            uint8_t data[8];
+            uint32_t can_id;
+        } POSTPACK;
+        uint8_t reverse[12];
+    };
+    // uint8_t tail; 
 } POSTPACK;
 
 /* Socket CAN message */
 struct PREPACK SCMsg {
-    uint8_t data[8];
-    RESERVE(24);
-    uint8_t can_dlc;
     uint32_t can_id;
+    uint8_t can_dlc;
+    RESERVE(24);
+    union {
+        uint8_t data[8];
+        uint8_t reverse[8];
+    };
 } POSTPACK;
 
 struct CANMsg {
@@ -64,7 +73,6 @@ protected:
     DevType dev_type;
 
     CANMsg send_; 
-    CANMsg buf_; 
     CANMsg recv_; 
 };
 

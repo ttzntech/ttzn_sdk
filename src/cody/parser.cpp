@@ -29,11 +29,13 @@ int pack(uint32_t idx, Data& data, const ActualData& act_data, DevType dev_type,
     case DevType::USB_TTL_CAN:
         out.utc.can_id = idx;
         ret = _pack(data, act_data, idx, out.utc.data, sizeof(out.utc.data));
+        reverse_byte(out.utc.reverse, sizeof(out.utc.reverse));
         break;
     case DevType::CANable:
     case DevType::ORIGIN:
         out.sc.can_id = idx;
         ret = _pack(data, act_data, idx, out.sc.data, sizeof(out.sc.data));
+        reverse_byte(out.sc.reverse, sizeof(out.sc.reverse));
         break;
     }
 
@@ -79,11 +81,13 @@ uint32_t unpack(Data& data, ActualData& act_data, DevType dev_type, CANMsg& in) 
     switch (dev_type)
     {
     case DevType::USB_TTL_CAN:
+        reverse_byte(in.utc.reverse, sizeof(in.utc.reverse));
         idx = in.utc.can_id;
         _unpack(data, act_data, idx, in.utc.data, sizeof(in.utc.data));
         break;
     case DevType::CANable:
     case DevType::ORIGIN:
+        reverse_byte(in.sc.reverse, sizeof(in.sc.reverse));
         idx = in.sc.can_id;
         _unpack(data, act_data, idx, in.sc.data, sizeof(in.sc.data));
         break;
