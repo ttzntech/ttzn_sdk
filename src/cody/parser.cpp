@@ -32,7 +32,8 @@ int pack(uint32_t idx, Data& data, const ActualData& act_data, DevType dev_type,
         break;
     case DevType::CANable:
     case DevType::ORIGIN:
-        /* TODO */
+        out.sc.can_id = idx;
+        ret = _pack(data, act_data, idx, out.sc.data, sizeof(out.sc.data));
         break;
     }
 
@@ -83,7 +84,8 @@ uint32_t unpack(Data& data, ActualData& act_data, DevType dev_type, CANMsg& in) 
         break;
     case DevType::CANable:
     case DevType::ORIGIN:
-        /* TODO */
+        idx = in.sc.can_id;
+        _unpack(data, act_data, idx, in.sc.data, sizeof(in.sc.data));
         break;
     }
 

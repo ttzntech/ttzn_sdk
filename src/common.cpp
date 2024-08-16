@@ -35,7 +35,12 @@ ifname(ifname), dev_type(dev_type) {
         break;
     case DevType::CANable:
     case DevType::ORIGIN:
-        /* code */
+        send_.sc.can_dlc = 0x08;
+        fd = socket_can_set(ifname.c_str());
+        if (fd == -1) {
+            perror("Error in open CAN\n");
+            exit(-1);
+        }
         break;
     default:
         perror("Error Unknow ModeType\n");
@@ -45,14 +50,5 @@ ifname(ifname), dev_type(dev_type) {
 }
 
 CANInterface::~CANInterface() {
-    switch (dev_type)
-    {
-    case DevType::USB_TTL_CAN:
-        close(fd);
-        break;
-    case DevType::CANable:
-    case DevType::ORIGIN:
-        /* code */
-        break;
-    }
+    close(fd);
 }

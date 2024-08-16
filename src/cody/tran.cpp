@@ -30,17 +30,20 @@ bool CANTran::send(uint32_t idx) {
         buf_.utc = send_.utc;
         reverse_byte(&buf_.utc, sizeof(buf_.utc));
         nbytes = write(fd, &buf_.utc, sizeof(buf_.utc));
-        if (nbytes != sizeof(buf_.utc)) {
-            #ifdef LOG
-            perror("Error in sending CAN frame");
-            #endif
-            return false;
-        }
         break;
     case DevType::CANable:
     case DevType::ORIGIN:
-        /* TODO */
+        buf_.sc = send_.sc;
+        reverse_byte(&buf_.sc, sizeof(buf_.sc));
+        nbytes = write(fd, &buf_.sc, sizeof(buf_.sc));
         break;
+    }
+
+    if (nbytes != sizeof(buf_.utc)) {
+        #ifdef LOG
+        perror("Error in sending CAN frame");
+        #endif
+        return false;
     }
 
     return true;
@@ -52,10 +55,10 @@ bool CANTran::send(uint32_t idx) {
  */
 bool CANTran::recv(uint32_t idx) {
     int nbytes;
-    switch (dev_type)
-    {
-    case DevType::USB_TTL_CAN:
-        while (!check_buf(idx, data)) { /* recv idx equal to desire or have buf data */
+    while (!check_buf(idx, data)) { /* recv idx equal to desire or have buf data */
+        switch (dev_type)
+        {
+        case DevType::USB_TTL_CAN:
             nbytes = read(fd, &recv_.utc, sizeof(recv_.utc));
             if (nbytes < 0) {
                 #ifdef LOG
@@ -64,13 +67,20 @@ bool CANTran::recv(uint32_t idx) {
                 return false;
             }
             reverse_byte(&recv_.utc, sizeof(recv_.utc));
-            unpack(data_, data, dev_type, recv_);
+            break;
+        case DevType::CANable:
+        case DevType::ORIGIN:
+            nbytes = read(fd, &recv_.sc, sizeof(recv_.sc));
+            if (nbytes < 0) {
+                #ifdef LOG
+                perror("Error in reading");
+                #endif
+                return false;
+            }
+            reverse_byte(&recv_.sc, sizeof(recv_.sc));
+            break;
         }
-        break;
-    case DevType::CANable:
-    case DevType::ORIGIN:
-        /* TODO */
-        break;
+        unpack(data_, data, dev_type, recv_);
     }
 
     return true;
