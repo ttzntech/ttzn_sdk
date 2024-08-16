@@ -8,7 +8,7 @@ usbttycan() {
     echo "Please type device path (default: /dev/ttyUSB0)"
     read -r dev
     # set dev default value to /dev/ttyUSB0
-    ${dev:="/dev/ttyUSB0"}
+    ${dev:="/dev/ttyUSB0"} &> /dev/null
 
     echo "setup device $dev"
     sudo chmod 777 $dev
@@ -21,7 +21,8 @@ CANable() {
 
 origin() {
     echo "Setup original CAN for ${RED}Nvidia Jetson AGX Xavier${RESET}"
-    if ! which busybox &> /dev/null ; then
+    path=`which busybox`
+    if [ -z path ]; then
         echo "Please install busybox first!"
         echo "${RED}sudo apt install busybox${RESET}"
         exit -1
@@ -29,7 +30,7 @@ origin() {
     echo "Please type CAN if name (default: can0)"
     read -r dev
     # set dev default value to can0
-    ${dev:="can0"}
+    ${dev:="can0"} &> /dev/null
 
     sudo busybox devmem 0x0c303018 0xc458
     sudo busybox devmem 0x0c303010 0xc400
