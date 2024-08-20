@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(ttzn_sdk VERSION 0.1.1)
+project(ttzn_sdk VERSION 0.2.0)
 
 # Define the variable to specify the target platform
 set(BUILD_ARCH "" CACHE STRING "Specify the target platform (e.g. arm64)")
@@ -21,7 +21,10 @@ message(STATUS "Build Arch  : ${CMAKE_SYSTEM_PROCESSOR}")
 # CPP compile standard default is C++11
 add_compile_options(-std=c++11)
 
+# CODY SRC FILES
 file(GLOB CODY_SRCS src/cody/*)
+# COROCO SRC FILES
+file(GLOB COROCO_SRCS src/coroco/*)
 
 add_library(${PROJECT_NAME} 
             # miscellaneous
@@ -29,6 +32,8 @@ add_library(${PROJECT_NAME}
             src/common.cpp
             # include CODY source code
             ${CODY_SRCS}
+            # include COROCO source code
+            ${COROCO_SRCS}
 )
 
 target_include_directories(${PROJECT_NAME}
