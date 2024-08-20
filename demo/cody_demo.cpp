@@ -81,7 +81,7 @@ int main() {
 
         can_tran.recv(ID_BMSFb);
         printf("0x361 BMSFb bat_SOC: %hhu vol: %hu cur: %hu tmp: %hu \n",
-            can_tran.data.i361BMSFb.bat_SOC,
+            can_tran.data.i361BMSFb.bat_soc,
             can_tran.data.i361BMSFb.vol,
             can_tran.data.i361BMSFb.cur,
             can_tran.data.i361BMSFb.temp

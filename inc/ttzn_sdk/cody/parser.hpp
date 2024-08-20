@@ -120,7 +120,7 @@ typedef union {
         uint16_t cur;   /* current */
         uint16_t vol;   /* voltage */
         RESERVE(8);
-        uint8_t bat_SOC;
+        uint8_t bat_soc;
     } POSTPACK;
     uint8_t data[8];
 } t361BMSFb;
@@ -202,7 +202,7 @@ struct ActualData {
 
     struct {
         uint8_t recv_;
-        uint8_t bat_SOC;
+        uint8_t bat_soc;
         uint16_t vol;       /* voltage */
         uint16_t cur;       /* current */
         uint16_t temp;      /* temperature */

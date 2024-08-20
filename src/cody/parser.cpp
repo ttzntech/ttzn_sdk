@@ -104,7 +104,7 @@ static void _unpack(Data& data, ActualData& act_data, uint32_t idx, uint8_t* dat
         act_data.i211SysStatus.recv_ = 1;
         act_data.i211SysStatus.cur_status = data.i211SysStatus.cur_status;
         act_data.i211SysStatus.ctrl_mode = data.i211SysStatus.ctrl_mode;
-        act_data.i211SysStatus.bat_vol = static_cast<double>(data.i211SysStatus.bat_vol / 100); /* V */
+        act_data.i211SysStatus.bat_vol = static_cast<double>(data.i211SysStatus.bat_vol * 0.01); /* V */
         act_data.i211SysStatus.error_info = data.i211SysStatus.error_info;
         act_data.i211SysStatus.parity = data.i211SysStatus.parity;
         break;
@@ -140,13 +140,13 @@ static void _unpack(Data& data, ActualData& act_data, uint32_t idx, uint8_t* dat
     case ID_OdomFb:
         memcpy(data.i311OdomFb.data, data_, size);
         act_data.i311OdomFb.recv_ = 1;
-        act_data.i311OdomFb.left = static_cast<double>(data.i311OdomFb.left / 1000); /* m */
-        act_data.i311OdomFb.right = static_cast<double>(data.i311OdomFb.right / 1000); /* m */
+        act_data.i311OdomFb.left = static_cast<double>(data.i311OdomFb.left * 0.001); /* m */
+        act_data.i311OdomFb.right = static_cast<double>(data.i311OdomFb.right * 0.001); /* m */
         break;
     case ID_BMSFb:
         memcpy(data.i361BMSFb.data, data_, size);
         act_data.i361BMSFb.recv_ = 1;
-        act_data.i361BMSFb.bat_SOC = bound<uint8_t>(data.i361BMSFb.bat_SOC, 0, 100);
+        act_data.i361BMSFb.bat_soc = bound<uint8_t>(data.i361BMSFb.bat_soc, 0, 100);
         act_data.i361BMSFb.vol = data.i361BMSFb.vol; /* voltage */
         act_data.i361BMSFb.cur = data.i361BMSFb.cur; /* current */
         act_data.i361BMSFb.temp = data.i361BMSFb.temp; /* degree */
