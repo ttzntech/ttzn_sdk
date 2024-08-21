@@ -20,7 +20,7 @@ namespace cody {
 
 class CANTran : public CANInterface {
 public:
-    CANTran(const std::string& ifname, DevType dev_type = DevType::USB_TTL_CAN);
+    CANTran(const std::string& ifname = "/dev/ttyUSB0", DevType dev_type = DevType::USB_TTL_CAN);
     
     bool send(uint32_t idx);
     bool recv(uint32_t idx);
