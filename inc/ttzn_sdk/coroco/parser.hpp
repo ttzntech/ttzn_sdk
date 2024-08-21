@@ -23,10 +23,11 @@ enum ID : uint32_t {
     ID_SysStatus            = 0x211,
     ID_MoveCtrlFb           = 0x221,
     ID_MoveCtrl             = 0x111,
-    ID_Motor1InfoFb         = 0x251,
-    ID_Motor2InfoFb         = 0x252,
-    ID_Motor3InfoFb         = 0x253,
-    ID_Motor4InfoFb         = 0x254,
+    ID_ReMoveCtrlFb         = 0x241,
+    ID_Motor1InfoFb         = 0x250,
+    ID_Motor2InfoFb         = 0x251,
+    ID_Motor3InfoFb         = 0x252,
+    ID_Motor4InfoFb         = 0x253,
     ID_WarnFb               = 0x261,
     ID_ModeCtrl             = 0x421,
     ID_LightCtrl            = 0x121,
@@ -45,10 +46,9 @@ typedef union {
     struct PREPACK {
         uint8_t parity;
         RESERVE(8);
-        uint8_t error_info;
-        RESERVE(8);
+        int16_t bat_cur;        /* battery current */
         uint16_t bat_vol;       /* battery voltage */
-        uint8_t ctrl_mode;      /* mode control */
+        uint8_t ctrl_mode;      /* control mode */
         uint8_t cur_status;     /* current status */
     } POSTPACK;
     uint8_t data[8];
@@ -64,27 +64,28 @@ typedef union {
 } t221MoveCtrlFb;
 
 typedef t221MoveCtrlFb t111MoveCtrl;
+typedef t221MoveCtrlFb t241ReMoveCtrlFb;
 
 typedef union {
     struct PREPACK {
-        int32_t pos;
+        uint32_t pos;
         RESERVE(16);
         int16_t rpm;
     } POSTPACK;
     uint8_t data[8];
-} t251Motor1InfoFb;
+} t250Motor1InfoFb;
 
-typedef t251Motor1InfoFb t252Motor2InfoFb;
-typedef t251Motor1InfoFb t253Motor3InfoFb;
-typedef t251Motor1InfoFb t254Motor4InfoFb;
+typedef t250Motor1InfoFb t251Motor2InfoFb;
+typedef t250Motor1InfoFb t252Motor3InfoFb;
+typedef t250Motor1InfoFb t253Motor4InfoFb;
 
 
 typedef union {
     struct PREPACK {
         RESERVE(8);
-        uint8_t emer_stop;      /* emergency stop */
-        uint8_t cabin2_temp;
-        uint8_t cabin1_temp;
+        uint8_t warn;           /* highest priority warning */
+        int8_t temp2;
+        int8_t temp1;
         uint8_t bat_warn;       /* battery warn */
         uint8_t motor2_warn;
         uint8_t motor1_warn;
@@ -93,6 +94,7 @@ typedef union {
     uint8_t data[8];
 } t261WarnFb;
 
+/* pin */
 typedef union {
     struct PREPACK {
         RESERVE(56);
@@ -104,8 +106,7 @@ typedef union {
 typedef union {
     struct PREPACK {
         uint8_t parity;
-        RESERVE(40);
-        uint8_t rear;       /* rear light */
+        RESERVE(48);
         uint8_t front;      /* front light */
     } POSTPACK;
     uint8_t data[8];
@@ -113,19 +114,19 @@ typedef union {
 
 typedef union {
     struct PREPACK {
-        uint32_t right;         /* right wheel odom */
-        uint32_t left;          /* left wheel odom */
+        RESERVE(32);
+        uint32_t odom;          /* left wheel odom */
     } POSTPACK;
     uint8_t data[8];
 } t311OdomFb;
 
 typedef union {
     struct PREPACK {
-        uint16_t temp;   /* temperature */
-        uint16_t cur;   /* current */
+        int16_t temp;   /* temperature */
+        int16_t cur;    /* current */
         uint16_t vol;   /* voltage */
         RESERVE(8);
-        uint8_t bat_SOC;
+        uint8_t bat_soc;
     } POSTPACK;
     uint8_t data[8];
 } t361BMSFb;
@@ -142,10 +143,11 @@ struct Data {
     t211SysStatus           i211SysStatus;
     t221MoveCtrlFb          i221MoveCtrlFb;
     t111MoveCtrl            i111MoveCtrl;
-    t251Motor1InfoFb        i251Motor1InfoFb;
-    t252Motor2InfoFb        i252Motor2InfoFb;
-    t253Motor3InfoFb        i253Motor3InfoFb;
-    t254Motor4InfoFb        i254Motor4InfoFb;
+    t241ReMoveCtrlFb        i241ReMoveCtrlFb;
+    t250Motor1InfoFb        i250Motor1InfoFb;
+    t251Motor2InfoFb        i251Motor2InfoFb;
+    t252Motor3InfoFb        i252Motor3InfoFb;
+    t253Motor4InfoFb        i253Motor4InfoFb;
     t261WarnFb              i261WarnFb;
     t421ModeCtrl            i421ModeCtrl;
     t121LightCtrl           i121LightCtrl;
@@ -155,8 +157,9 @@ struct Data {
 };
 
 enum class E421Mode: uint8_t {
-    SPEED,      /* speed mode */
-    TORQUE      /* torque mode */
+    IDEL,       /* idel mode */
+    REMOTE,     /* remote control mode */
+    CAN         /* CAN control mode */
 };
 
 enum class E121Light: uint8_t {
@@ -170,7 +173,7 @@ struct ActualData {
         uint8_t cur_status;
         uint8_t ctrl_mode;
         double bat_vol;
-        uint8_t error_info;
+        double bat_cur;
         uint8_t parity;
     } i211SysStatus;
 
@@ -178,13 +181,13 @@ struct ActualData {
         uint8_t recv_;
         double speed;
         double angular;
-    } i221MoveCtrlFb, i111MoveCtrl;
+    } i221MoveCtrlFb, i111MoveCtrl, i241ReMoveCtrlFb;
 
     struct {
         uint8_t recv_;
         int16_t rpm;
-        int32_t pos;
-    } i251Motor1InfoFb, i252Motor2InfoFb, i253Motor3InfoFb, i254Motor4InfoFb;
+        uint32_t pos;
+    } i250Motor1InfoFb, i251Motor2InfoFb, i252Motor3InfoFb, i253Motor4InfoFb;
 
     struct {
         uint8_t recv_;
@@ -192,9 +195,9 @@ struct ActualData {
         uint8_t motor1_warn;
         uint8_t motor2_warn;
         uint8_t bat_warn;       /* battery warn */
-        uint8_t cabin1_temp;
-        uint8_t cabin2_temp;
-        uint8_t emer_stop;      /* emergency stop */
+        int8_t temp1;
+        int8_t temp2;
+        uint8_t warn;           /* highest prioirty warning */
     } i261WarnFb;
 
     struct {
@@ -205,22 +208,20 @@ struct ActualData {
     struct {
         uint8_t recv_;
         E121Light front;
-        E121Light rear;
         uint8_t parity;
     } i121LightCtrl;
 
     struct {
         uint8_t recv_;
-        double left;
-        double right;
+        double odom;
     } i311OdomFb;
 
     struct {
         uint8_t recv_;
-        uint8_t bat_SOC;
+        uint8_t bat_soc;
         uint16_t vol;       /* voltage */
-        uint16_t cur;       /* current */
-        uint16_t temp;      /* temperature */
+        int16_t cur;        /* current */
+        int16_t temp;       /* temperature */
     } i361BMSFb;
 
     struct {

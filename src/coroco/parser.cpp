@@ -56,7 +56,6 @@ static int _pack(Data& data, const ActualData& act_data, uint32_t idx, uint8_t* 
         break;
     case ID_LightCtrl:
         data.i121LightCtrl.front = static_cast<uint8_t>(act_data.i121LightCtrl.front);
-        data.i121LightCtrl.rear = static_cast<uint8_t>(act_data.i121LightCtrl.rear);
         data.i121LightCtrl.parity = act_data.i121LightCtrl.parity;
         memcpy(data_, data.i121LightCtrl.data, size);
         break;
@@ -106,39 +105,45 @@ static void _unpack(Data& data, ActualData& act_data, uint32_t idx, uint8_t* dat
         act_data.i211SysStatus.recv_ = 1;
         act_data.i211SysStatus.cur_status = data.i211SysStatus.cur_status;
         act_data.i211SysStatus.ctrl_mode = data.i211SysStatus.ctrl_mode;
-        act_data.i211SysStatus.bat_vol = static_cast<double>(data.i211SysStatus.bat_vol / 100); /* V */
-        act_data.i211SysStatus.error_info = data.i211SysStatus.error_info;
+        act_data.i211SysStatus.bat_vol = static_cast<double>(data.i211SysStatus.bat_vol * 0.01); /* V */
+        act_data.i211SysStatus.bat_cur = static_cast<double>(data.i211SysStatus.bat_cur * 0.01); /* A */
         act_data.i211SysStatus.parity = data.i211SysStatus.parity;
         break;
     case ID_MoveCtrlFb:
         memcpy(data.i221MoveCtrlFb.data, data_, size);
         act_data.i221MoveCtrlFb.recv_ = 1;
         act_data.i221MoveCtrlFb.speed = static_cast<double>(data.i221MoveCtrlFb.speed * 0.001); /* m/s */
-        act_data.i221MoveCtrlFb.angular = static_cast<double>(data.i221MoveCtrlFb.angular * 0.001); /* rad/s */
+        act_data.i221MoveCtrlFb.angular = static_cast<double>(data.i221MoveCtrlFb.angular * 0.004); /* rad/s */
+        break;
+    case ID_ReMoveCtrlFb:
+        memcpy(data.i241ReMoveCtrlFb.data, data_, size);
+        act_data.i241ReMoveCtrlFb.recv_ = 1;
+        act_data.i241ReMoveCtrlFb.speed = static_cast<double>(data.i241ReMoveCtrlFb.speed * 0.001); /* m/s */
+        act_data.i241ReMoveCtrlFb.angular = static_cast<double>(data.i241ReMoveCtrlFb.angular * 0.004); /* rad/s */
         break;
     case ID_Motor1InfoFb:
-        memcpy(data.i251Motor1InfoFb.data, data_, size);
-        act_data.i251Motor1InfoFb.recv_ = 1;
-        act_data.i251Motor1InfoFb.rpm = data.i251Motor1InfoFb.rpm;
-        act_data.i251Motor1InfoFb.pos = data.i251Motor1InfoFb.pos;
+        memcpy(data.i250Motor1InfoFb.data, data_, size);
+        act_data.i250Motor1InfoFb.recv_ = 1;
+        act_data.i250Motor1InfoFb.rpm = data.i250Motor1InfoFb.rpm;
+        act_data.i250Motor1InfoFb.pos = data.i250Motor1InfoFb.pos;
         break;
     case ID_Motor2InfoFb:
-        memcpy(data.i252Motor2InfoFb.data, data_, size);
-        act_data.i252Motor2InfoFb.recv_ = 1;
-        act_data.i252Motor2InfoFb.rpm = data.i252Motor2InfoFb.rpm;
-        act_data.i252Motor2InfoFb.pos = data.i252Motor2InfoFb.pos;
+        memcpy(data.i251Motor2InfoFb.data, data_, size);
+        act_data.i251Motor2InfoFb.recv_ = 1;
+        act_data.i251Motor2InfoFb.rpm = data.i251Motor2InfoFb.rpm;
+        act_data.i251Motor2InfoFb.pos = data.i251Motor2InfoFb.pos;
         break;
     case ID_Motor3InfoFb:
-        memcpy(data.i253Motor3InfoFb.data, data_, size);
-        act_data.i253Motor3InfoFb.recv_ = 1;
-        act_data.i253Motor3InfoFb.rpm = data.i253Motor3InfoFb.rpm;
-        act_data.i253Motor3InfoFb.pos = data.i253Motor3InfoFb.pos;
+        memcpy(data.i252Motor3InfoFb.data, data_, size);
+        act_data.i252Motor3InfoFb.recv_ = 1;
+        act_data.i252Motor3InfoFb.rpm = data.i252Motor3InfoFb.rpm;
+        act_data.i252Motor3InfoFb.pos = data.i252Motor3InfoFb.pos;
         break;
     case ID_Motor4InfoFb:
-        memcpy(data.i254Motor4InfoFb.data, data_, size);
-        act_data.i254Motor4InfoFb.recv_ = 1;
-        act_data.i254Motor4InfoFb.rpm = data.i254Motor4InfoFb.rpm;
-        act_data.i254Motor4InfoFb.pos = data.i254Motor4InfoFb.pos;
+        memcpy(data.i253Motor4InfoFb.data, data_, size);
+        act_data.i253Motor4InfoFb.recv_ = 1;
+        act_data.i253Motor4InfoFb.rpm = data.i253Motor4InfoFb.rpm;
+        act_data.i253Motor4InfoFb.pos = data.i253Motor4InfoFb.pos;
         break;
     case ID_WarnFb:
         memcpy(data.i261WarnFb.data, data_, size);
@@ -147,20 +152,19 @@ static void _unpack(Data& data, ActualData& act_data, uint32_t idx, uint8_t* dat
         act_data.i261WarnFb.motor1_warn = data.i261WarnFb.motor1_warn;
         act_data.i261WarnFb.motor2_warn = data.i261WarnFb.motor2_warn;
         act_data.i261WarnFb.bat_warn = data.i261WarnFb.bat_warn;
-        act_data.i261WarnFb.cabin1_temp = data.i261WarnFb.cabin1_temp;
-        act_data.i261WarnFb.cabin2_temp = data.i261WarnFb.cabin2_temp;
-        act_data.i261WarnFb.emer_stop = data.i261WarnFb.emer_stop;
+        act_data.i261WarnFb.temp1 = data.i261WarnFb.temp1;
+        act_data.i261WarnFb.temp2 = data.i261WarnFb.temp2;
+        act_data.i261WarnFb.warn = data.i261WarnFb.warn;
         break;
     case ID_OdomFb:
         memcpy(data.i311OdomFb.data, data_, size);
         act_data.i311OdomFb.recv_ = 1;
-        act_data.i311OdomFb.left = static_cast<double>(data.i311OdomFb.left / 1000); /* m */
-        act_data.i311OdomFb.right = static_cast<double>(data.i311OdomFb.right / 1000); /* m */
+        act_data.i311OdomFb.odom = static_cast<double>(data.i311OdomFb.odom * 0.01); /* m */
         break;
     case ID_BMSFb:
         memcpy(data.i361BMSFb.data, data_, size);
         act_data.i361BMSFb.recv_ = 1;
-        act_data.i361BMSFb.bat_SOC = bound<uint8_t>(data.i361BMSFb.bat_SOC, 0, 100);
+        act_data.i361BMSFb.bat_soc = bound<uint8_t>(data.i361BMSFb.bat_soc, 0, 100);
         act_data.i361BMSFb.vol = data.i361BMSFb.vol; /* voltage */
         act_data.i361BMSFb.cur = data.i361BMSFb.cur; /* current */
         act_data.i361BMSFb.temp = data.i361BMSFb.temp; /* degree */
@@ -190,15 +194,33 @@ int check_buf(uint32_t idx, ActualData& act_data) {
             return 1;
         }
         break;
+    case ID_ReMoveCtrlFb:
+        if (act_data.i241ReMoveCtrlFb.recv_) {
+            act_data.i241ReMoveCtrlFb.recv_ = 0;
+            return 1;
+        }
+        break;
     case ID_Motor1InfoFb:
-        if (act_data.i251Motor1InfoFb.recv_) {
-            act_data.i251Motor1InfoFb.recv_ = 0;
+        if (act_data.i250Motor1InfoFb.recv_) {
+            act_data.i250Motor1InfoFb.recv_ = 0;
             return 1;
         }
         break;
     case ID_Motor2InfoFb:
-        if (act_data.i252Motor2InfoFb.recv_) {
-            act_data.i252Motor2InfoFb.recv_ = 0;
+        if (act_data.i251Motor2InfoFb.recv_) {
+            act_data.i251Motor2InfoFb.recv_ = 0;
+            return 1;
+        }
+        break;
+    case ID_Motor3InfoFb:
+        if (act_data.i252Motor3InfoFb.recv_) {
+            act_data.i252Motor3InfoFb.recv_ = 0;
+            return 1;
+        }
+        break;
+    case ID_Motor4InfoFb:
+        if (act_data.i253Motor4InfoFb.recv_) {
+            act_data.i253Motor4InfoFb.recv_ = 0;
             return 1;
         }
         break;
