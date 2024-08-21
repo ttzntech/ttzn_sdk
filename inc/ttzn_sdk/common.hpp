@@ -61,7 +61,7 @@ struct CANMsg {
 
 class CANInterface {
 public:
-    CANInterface(const std::string& ifname, DevType dev_type=DevType::USB_TTL_CAN);
+    CANInterface(const std::string& ifname, DevType dev_type);
     ~CANInterface();
 
     virtual bool send(uint32_t idx) = 0;

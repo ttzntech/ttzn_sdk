@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(ttzn_sdk VERSION 0.2.0)
+project(ttzn_sdk VERSION 0.2.1)
 
 # Define the variable to specify the target platform
 set(BUILD_ARCH "" CACHE STRING "Specify the target platform (e.g. arm64)")

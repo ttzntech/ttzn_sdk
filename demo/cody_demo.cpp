@@ -18,7 +18,7 @@ using namespace cody;
 
 
 int main() {
-    CANTran can_tran("/dev/ttyUSB0");
+    CANTran can_tran("/dev/ttyUSB0", DevType::USB_TTL_CAN);
 
     while (true) {
         can_tran.data.i111MoveCtrl.speed = 0.3;
