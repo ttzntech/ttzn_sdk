@@ -47,11 +47,18 @@ option(ENABLE_TEST "enable test or not" OFF)
 
 ####### Demo #######
 option(CODY_DEMO "compile cody demo code" OFF)
+option(COROCO_DEMO "compile coroco demo code" OFF)
 
 ###### cody Demo ######
 if (CODY_DEMO)
 add_executable(cody_demo demo/cody_demo.cpp)
 target_link_libraries(cody_demo ${PROJECT_NAME})
+endif()
+
+###### coroco Demo ######
+if (COROCO_DEMO)
+add_executable(coroco_demo demo/coroco_demo.cpp)
+target_link_libraries(coroco_demo ${PROJECT_NAME})
 endif()
 
 ##### EXPORT AND INSTALL #####

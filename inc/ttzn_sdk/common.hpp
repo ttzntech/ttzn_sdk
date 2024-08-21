@@ -62,7 +62,9 @@ struct CANMsg {
 class CANInterface {
 public:
     CANInterface(const std::string& ifname, DevType dev_type);
-    ~CANInterface();
+    CANInterface(const CANInterface&) = delete;
+    CANInterface& operator=(const CANInterface&) = delete;
+    virtual ~CANInterface();
 
     virtual bool send(uint32_t idx) = 0;
     virtual bool recv(uint32_t idx) = 0;
@@ -75,6 +77,5 @@ protected:
     CANMsg send_; 
     CANMsg recv_; 
 };
-
 
 #endif /* END COMMON_H */

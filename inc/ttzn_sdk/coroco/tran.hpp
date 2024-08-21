@@ -20,7 +20,6 @@ namespace coroco {
 
 class CANTran : public CANInterface {
 public:
-    CANTran() = default;
     CANTran(const std::string& ifname, DevType dev_type);
     
     bool send(uint32_t idx);
