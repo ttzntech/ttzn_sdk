@@ -158,7 +158,6 @@ struct Data {
 
 enum class E421Mode: uint8_t {
     IDEL,       /* idel mode */
-    REMOTE,     /* remote control mode */
     CAN         /* CAN control mode */
 };
 
