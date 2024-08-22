@@ -85,4 +85,31 @@ bool CANTran::recv(uint32_t idx) {
     return true;
 }
 
+void CANTran::async_recv_() {
+    int nbytes;
+    switch (dev_type)
+    {
+    case DevType::USB_TTL_CAN:
+        nbytes = read(fd, &recv_.utc, sizeof(recv_.utc));
+        if (nbytes < 0) {
+            #ifdef LOG
+            perror("Error in reading");
+            #endif
+            return;
+        }
+        break;
+    case DevType::CANable:
+    case DevType::ORIGIN:
+        nbytes = read(fd, &recv_.sc, sizeof(recv_.sc));
+        if (nbytes < 0) {
+            #ifdef LOG
+            perror("Error in reading");
+            #endif
+            return;
+        }
+        break;
+    }
+    unpack(data_, data, dev_type, recv_);
+}
+
 } /* END namespace cody */

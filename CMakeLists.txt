@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(ttzn_sdk VERSION 0.2.1)
+project(ttzn_sdk VERSION 0.2.2)
 
 # Define the variable to specify the target platform
 set(BUILD_ARCH "" CACHE STRING "Specify the target platform (e.g. arm64)")
@@ -21,6 +21,9 @@ message(STATUS "Build Arch  : ${CMAKE_SYSTEM_PROCESSOR}")
 # CPP compile standard default is C++11
 add_compile_options(-std=c++11)
 
+# Find the Threads package
+find_package(Threads REQUIRED)
+
 # CODY SRC FILES
 file(GLOB CODY_SRCS src/cody/*)
 # COROCO SRC FILES
@@ -35,6 +38,9 @@ add_library(${PROJECT_NAME}
             # include COROCO source code
             ${COROCO_SRCS}
 )
+
+# Link pthread library to the target
+target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC 

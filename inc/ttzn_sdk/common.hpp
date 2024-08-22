@@ -12,6 +12,8 @@
 
 #include <stdint.h>
 #include <string>
+#include <thread>
+#include <atomic>
 
 #include "utils.hpp"
 
@@ -69,13 +71,22 @@ public:
     virtual bool send(uint32_t idx) = 0;
     virtual bool recv(uint32_t idx) = 0;
 
+    virtual void async_recv();
+    virtual void stop_async_recv();
+
 protected:
     int fd;
     std::string ifname;
     DevType dev_type;
 
     CANMsg send_; 
-    CANMsg recv_; 
+    CANMsg recv_;
+
+    /* async recv */
+    std::thread recv_thread_;
+    std::atomic<bool> running_;
+    
+    virtual void async_recv_() = 0;
 };
 
 #endif /* END COMMON_H */

@@ -19,6 +19,7 @@ using namespace cody;
 
 int main() {
     CANTran can_tran("/dev/ttyUSB0", DevType::USB_TTL_CAN);
+    can_tran.async_recv();
 
     while (true) {
         can_tran.data.i111MoveCtrl.speed = 0.3;
@@ -33,7 +34,7 @@ int main() {
         can_tran.send(ID_LightCtrl);
 
         printf("######################## BEGIN ############################## \n");
-        can_tran.recv(ID_SysStatus);
+        // can_tran.recv(ID_SysStatus);
         printf("0x211 SysStatus cur_status: %hhu ctrl_mode: %hhu \n \
                 bat_vol: %.2lf error_info: %hhd parity: %hhd \n",
             can_tran.data.i211SysStatus.cur_status,
@@ -43,25 +44,25 @@ int main() {
             can_tran.data.i211SysStatus.parity
         );
 
-        can_tran.recv(ID_MoveCtrlFb);
+        // can_tran.recv(ID_MoveCtrlFb);
         printf("0x221 MoveCtrlFb speed: %.2lf corner: %.2lf \n",
             can_tran.data.i221MoveCtrlFb.speed,
             can_tran.data.i221MoveCtrlFb.corner
         );
 
-        can_tran.recv(ID_Motor1InfoFb);
+        // can_tran.recv(ID_Motor1InfoFb);
         printf("0x251 Motor1InfoFb rpm: %hd pos: %hd \n",
             can_tran.data.i251Motor1InfoFb.rpm,
             can_tran.data.i251Motor1InfoFb.pos
         );
         
-        can_tran.recv(ID_Motor2InfoFb);
+        // can_tran.recv(ID_Motor2InfoFb);
         printf("0x252 Motor2InfoFb rpm: %hd pos: %hd \n",
             can_tran.data.i252Motor2InfoFb.rpm,
             can_tran.data.i252Motor2InfoFb.pos
         );
 
-        can_tran.recv(ID_WarnFb);
+        // can_tran.recv(ID_WarnFb);
         printf("0x261 WarnFb steer_motor_warn: %hhu motor1_warn: %hhu motor2_warn: %hhu \n \
                 bat_warn: %hhu cabin1_temp: %hhu cabin2_temp %hhu emer_stop: %hhu \n",
             can_tran.data.i261WarnFb.steer_motor_warn,
@@ -73,13 +74,13 @@ int main() {
             can_tran.data.i261WarnFb.emer_stop
         );
 
-        can_tran.recv(ID_OdomFb);
+        // can_tran.recv(ID_OdomFb);
         printf("0x311 OdomFb left: %.2lf right: %.2lf \n",
             can_tran.data.i311OdomFb.left,
             can_tran.data.i311OdomFb.right
         );
 
-        can_tran.recv(ID_BMSFb);
+        // can_tran.recv(ID_BMSFb);
         printf("0x361 BMSFb bat_SOC: %hhu vol: %hu cur: %hu tmp: %hu \n",
             can_tran.data.i361BMSFb.bat_soc,
             can_tran.data.i361BMSFb.vol,

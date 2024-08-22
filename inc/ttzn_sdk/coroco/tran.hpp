@@ -22,12 +22,13 @@ class CANTran : public CANInterface {
 public:
     CANTran(const std::string& ifname, DevType dev_type);
     
-    bool send(uint32_t idx);
-    bool recv(uint32_t idx);
+    bool send(uint32_t idx) override;
+    bool recv(uint32_t idx) override;
 
     ActualData data;
 
 private:
+    void async_recv_() override;
     Data data_;
 };
 

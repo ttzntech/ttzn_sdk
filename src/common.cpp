@@ -51,4 +51,29 @@ ifname(ifname), dev_type(dev_type) {
 
 CANInterface::~CANInterface() {
     close(fd);
+    stop_async_recv();
+}
+
+/**
+ * @brief asynchronous recv function
+ * 
+ */
+void CANInterface::async_recv() {
+    running_ = true;
+    recv_thread_ = std::thread([this]() {
+        while (running_) {
+            this->async_recv_();
+        }
+    });
+}
+
+/**
+ * @brief stop async recv thread 
+ * 
+ */
+void CANInterface::stop_async_recv() {
+    running_ = false;
+    if (recv_thread_.joinable()) {
+        recv_thread_.join();
+    }
 }
