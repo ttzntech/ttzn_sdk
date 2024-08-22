@@ -6,3 +6,5 @@ include("${CMAKE_CURRENT_LIST_DIR}/ttzn_sdkTargets.cmake")
 
 # Capturing values from configure (optional) 
 # set(my-config-var @my-config-var@)
+
+find_package(Threads REQUIRED)
