@@ -240,4 +240,5 @@ static void _unpack(Data& data, ActualData& act_data, uint32_t idx, uint8_t* dat
 int check_buf(uint32_t idx, ActualData& act_data);
 
 } /* END coroco namespace */
+
 #endif /* END COROCO_PARSER_H */

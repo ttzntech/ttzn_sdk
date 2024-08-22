@@ -47,7 +47,7 @@ static int _pack(Data& data, const ActualData& act_data, uint32_t idx, uint8_t* 
     {
     case ID_MoveCtrl:
         data.i111MoveCtrl.speed = bound<int16_t>(static_cast<int16_t>(act_data.i111MoveCtrl.speed / 0.001), -2000, 2000);
-        data.i111MoveCtrl.angular = bound<int16_t>(static_cast<int16_t>(act_data.i111MoveCtrl.angular / 0.001), -500, 500);
+        data.i111MoveCtrl.angular = bound<int16_t>(static_cast<int16_t>(act_data.i111MoveCtrl.angular / 0.004), -500, 500);
         memcpy(data_, data.i111MoveCtrl.data, size);
         break;
     case ID_ModeCtrl:
@@ -165,8 +165,8 @@ static void _unpack(Data& data, ActualData& act_data, uint32_t idx, uint8_t* dat
         memcpy(data.i361BMSFb.data, data_, size);
         act_data.i361BMSFb.recv_ = 1;
         act_data.i361BMSFb.bat_soc = bound<uint8_t>(data.i361BMSFb.bat_soc, 0, 100);
-        act_data.i361BMSFb.vol = data.i361BMSFb.vol; /* voltage */
-        act_data.i361BMSFb.cur = data.i361BMSFb.cur; /* current */
+        act_data.i361BMSFb.vol = data.i361BMSFb.vol; /* voltage mV */
+        act_data.i361BMSFb.cur = data.i361BMSFb.cur; /* current A */
         act_data.i361BMSFb.temp = data.i361BMSFb.temp; /* degree */
         break;
     }
