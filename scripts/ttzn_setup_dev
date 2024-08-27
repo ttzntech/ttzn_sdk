@@ -20,7 +20,7 @@ CANable() {
 }
 
 origin() {
-    echo "Setup original CAN for ${RED}Nvidia Jetson AGX Xavier${RESET}"
+    echo "Setup original CAN for ${RED}Nvidia Jetson${RESET}"
     path=`which busybox`
     if [ -z path ]; then
         echo "Please install busybox first!"

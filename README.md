@@ -22,9 +22,9 @@ $$$$$$$$\ $$$$$$$$\ $$$$$$$$\ $$\   $$\        $$$$$$\  $$$$$$$\  $$\   $$\
 ## 支持的平台
 
 ### 软件环境
-- 架构：x86_64/arm64
+- 架构：x86_64 / arm64
 - 操作系统：Ubuntu 20.04/22.04
-- ROS 版本：Noetic（ROS1）/Humble（ROS2）
+- ROS 版本：Noetic (ROS1) / Humble (ROS2)
 
 该项目也应该可以在其他类似的 Linux 环境中工作，但只有上面列出的环境做过测试。
 
@@ -95,8 +95,8 @@ ttzn_setup_dev
 
 > Please select setup device type (default: 1)
 > 1: USB TTL CAN
-> 2: CANable
-> 3: ORIGIN (Nvidia Jetson AGX Xavier)
+> 2: CANable (Unsupport yet!)
+> 3: ORIGIN (Nvidia Jetson)
 ...
 ```
 
@@ -105,6 +105,11 @@ ttzn_setup_dev
 该项目会输出一个 CMake package，使用CMake `find_package(ttzn_sdk)` 即可引入该项目。
 
 具体细节请参考 [demo](./demo) 子目录。
+
+## FAQ
+1. 关于 USB-TTL-CAN 设备无法挂载 `/dev/ttyUSB0` 的问题。\
+   这里是 `brltty` 占用问题，直接删除即可 `sudo apt remove brltty`。
+
 
 ---
 Copyright &copy; 2023 [威海天特智能科技有限公司](http://ttzntech.com/)

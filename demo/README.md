@@ -54,6 +54,14 @@ int main() {
         can_tran.data.i221MoveCtrlFb.corner
     );
 
+    /* 异步接收 */
+    can_tran.async_recv();
+    /* 直接读取数据 */
+    printf("0x221 MoveCtrlFb speed: %.2lf corner: %.2lf \n",
+        can_tran.data.i221MoveCtrlFb.speed,
+        can_tran.data.i221MoveCtrlFb.corner
+    );
+
     return 0;
 }
 ```
