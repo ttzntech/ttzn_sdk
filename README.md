@@ -23,7 +23,7 @@ $$$$$$$$\ $$$$$$$$\ $$$$$$$$\ $$\   $$\        $$$$$$\  $$$$$$$\  $$\   $$\
 
 ### 软件环境
 - 架构：x86_64 / arm64
-- 操作系统：Ubuntu 20.04/22.04
+- 操作系统：Ubuntu 20.04 / 22.04
 - ROS 版本：Noetic (ROS1) / Humble (ROS2)
 
 该项目也应该可以在其他类似的 Linux 环境中工作，但只有上面列出的环境做过测试。
@@ -108,7 +108,7 @@ ttzn_setup_dev
 
 ## FAQ
 1. 关于 USB-TTL-CAN 设备无法挂载 `/dev/ttyUSB0` 的问题。\
-   这里是 `brltty` 占用问题，直接删除即可 `sudo apt remove brltty`。
+发现是 `brltty` 占用`/dev/ttyUSB0`导致，直接删除`brltty`即可。 `sudo apt remove brltty`
 
 
 ---

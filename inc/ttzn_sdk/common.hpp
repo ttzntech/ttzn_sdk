@@ -56,7 +56,7 @@ struct PREPACK SCMsg {
     };
 } POSTPACK;
 
-struct CANMsg {
+union CANMsg {
     UTCMsg utc; /* utc stand for usb ttl can */
     SCMsg sc;   /* sc stand for socket can */
 };

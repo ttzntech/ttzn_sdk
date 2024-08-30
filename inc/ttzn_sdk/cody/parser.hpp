@@ -211,11 +211,7 @@ struct ActualData {
 
 int pack(uint32_t idx, Data& data, const ActualData& act_data, DevType dev_type, CANMsg& out);
 
-static int _pack(Data& data, const ActualData& act_data, uint32_t idx, uint8_t* data_, size_t size);
-
 uint32_t unpack(Data& data, ActualData& act_data, DevType dev_type, CANMsg& in);
-
-static void _unpack(Data& data, ActualData& act_data, uint32_t idx, uint8_t* data_, size_t size);
 
 int check_buf(uint32_t idx, ActualData& act_data);
 

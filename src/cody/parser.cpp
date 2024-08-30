@@ -12,6 +12,11 @@
 
 namespace cody {
 
+/* static function forward declaration */
+static int _pack(Data& data, const ActualData& act_data, uint32_t idx, uint8_t* data_, size_t size);
+
+static void _unpack(Data& data, ActualData& act_data, uint32_t idx, uint8_t* data_, size_t size);
+
 /**
  * @brief pack data with specific 'idx' in 'act_data' to 'out'
  * 
