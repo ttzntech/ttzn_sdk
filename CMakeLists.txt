@@ -21,6 +21,9 @@ message(STATUS "Build Arch  : ${CMAKE_SYSTEM_PROCESSOR}")
 # CPP compile standard default is C++11
 add_compile_options(-std=c++11)
 
+# generate PIC library 
+add_compile_options(-fpic)
+
 # Find the Threads package
 find_package(Threads REQUIRED)
 
