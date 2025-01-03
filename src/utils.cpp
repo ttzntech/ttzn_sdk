@@ -177,7 +177,12 @@ int uart_set(int fd, uint64_t baude, int c_flow, int bits, char parity, int stop
     return 0;
 }
 
-
+/**
+ * @brief setup socket CAN on `ifname`
+ * 
+ * @param ifname 
+ * @return int 
+ */
 int socket_can_set(const char* ifname) {
     /* Create a socket */
     int sock = socket(PF_CAN, SOCK_RAW, CAN_RAW);

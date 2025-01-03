@@ -9,7 +9,12 @@
 
 #include "ttzn_sdk/common.hpp"
 
-
+/**
+ * @brief Construct a new CANInterface::CANInterface object
+ * 
+ * @param ifname 
+ * @param dev_type 
+ */
 CANInterface::CANInterface(const std::string& ifname, DevType dev_type) : 
 ifname(ifname), dev_type(dev_type) {
     int baud;
@@ -49,6 +54,50 @@ ifname(ifname), dev_type(dev_type) {
     }
 }
 
+/**
+ * @brief send a CAN frame
+ * before invoke this function, should fill the corresponding data at `idx`
+ * 
+ * @param idx 
+ * @return true 
+ * @return false 
+ */
+bool CANInterface::send(uint32_t idx) {
+    int nbytes;
+    switch (dev_type)
+    {
+    case DevType::USB_TTL_CAN:
+        send_.utc.can_id = idx;
+        if (!pack(idx, send_.utc.data, sizeof(send_.utc.data))) {
+            perror("Error in packing CAN frame");
+            return false;
+        }
+        reverse_byte(send_.utc.reverse, sizeof(send_.utc.reverse));
+        nbytes = write(fd, &send_.utc, sizeof(send_.utc));
+        if (nbytes != sizeof(send_.utc)) {
+            perror("Error in sending CAN frame");
+            return false;
+        }
+        break;
+    case DevType::CANable:
+    case DevType::ORIGIN:
+        send_.sc.can_id = idx;
+        if (!pack(idx, send_.sc.data, sizeof(send_.sc.data))) {
+            perror("Error in packing CAN frame");
+            return false;
+        }
+        reverse_byte(send_.sc.reverse, sizeof(send_.sc.reverse));
+        nbytes = write(fd, &send_.sc, sizeof(send_.sc));
+        if (nbytes != sizeof(send_.sc)) {
+            perror("Error in sending CAN frame");
+            return false;
+        }
+        break;
+    }
+
+    return true;
+}
+
 CANInterface::~CANInterface() {
     close(fd);
     stop_async_recv();
@@ -61,8 +110,27 @@ CANInterface::~CANInterface() {
 void CANInterface::async_recv() {
     running_ = true;
     recv_thread_ = std::thread([this]() {
+        int nbytes;
+        uint32_t idx;
         while (running_) {
-            this->async_recv_();
+            switch (dev_type)
+            {
+            case DevType::USB_TTL_CAN:
+                nbytes = read(fd, &recv_.utc, sizeof(recv_.utc));
+                if (nbytes < 0) continue;
+                reverse_byte(recv_.utc.reverse, sizeof(recv_.utc.reverse));
+                idx = recv_.utc.can_id;
+                unpack(idx, recv_.utc.data, sizeof(recv_.utc.data));
+                break;
+            case DevType::CANable:
+            case DevType::ORIGIN:
+                nbytes = read(fd, &recv_.sc, sizeof(recv_.sc));
+                if (nbytes < 0) continue;
+                reverse_byte(recv_.sc.reverse, sizeof(recv_.sc.reverse));
+                idx = recv_.sc.can_id;
+                unpack(idx, recv_.sc.data, sizeof(recv_.sc.data));
+                break;
+            }
         }
     });
 }

@@ -68,8 +68,7 @@ public:
     CANInterface& operator=(const CANInterface&) = delete;
     virtual ~CANInterface();
 
-    virtual bool send(uint32_t idx) = 0;
-    virtual bool recv(uint32_t idx) = 0;
+    virtual bool send(uint32_t idx);
 
     virtual void async_recv();
     virtual void stop_async_recv();
@@ -85,8 +84,10 @@ protected:
     /* async recv */
     std::thread recv_thread_;
     std::atomic<bool> running_;
+
+    virtual bool pack(uint32_t idx, uint8_t* pack_data, size_t size) = 0;
+    virtual void unpack(uint32_t idx, uint8_t* unpack_data, size_t size) = 0;
     
-    virtual void async_recv_() = 0;
 };
 
 #endif /* END COMMON_H */
