@@ -94,9 +94,9 @@ sudo make install
 ttzn_setup_dev
 
 > Please select setup device type (default: 1)
-> 1: USB TTL CAN
-> 2: CANable
-> 3: ORIGIN (Nvidia Jetson)
+> 1: USB TTL CAN (niren USB-CAN-V3)
+> 2: CANable     (pcan, slcan)
+> 3: ORIGIN      (Nvidia Jetson series)
 ...
 ```
 

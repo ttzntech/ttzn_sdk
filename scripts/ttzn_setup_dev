@@ -17,11 +17,11 @@ usbttycan() {
 CANable() {
     pcan() {
         echo "Setup a pcan-CANable device"
-        sudo modprobe peak_usb
         echo "Please type CAN if name (default: can0)"
         read -r can 
         # set can default value to can0
         can=${can:="can0"}
+        sudo modprobe peak_usb
         sudo ip link set $can up type can bitrate 500000
     }
 
